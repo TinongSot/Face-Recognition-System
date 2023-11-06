@@ -3,7 +3,8 @@
 ## Project Folder Structure
 
 ### Dataset Folder:
-- raw_images (the raw images from the LFW dataset)
+- Raw (folder for raw face images)
+- Preprocessed (folder for preprocessed face images)
 
 ### Code Folder:
 - data_preprocessing (scripts related to data preprocessing)
@@ -13,11 +14,12 @@
 - utils (utility scripts or functions)
 
 ### Models Folder:
-- trained_models (saved trained models)
+- Pretrained Models (folder for pretrained face recognition models)
 
 ### Results Folder:
-- evaluation_results (results and metrics obtained from model evaluation)
+- Evaluation (folder for evaluation results and performance metrics)
+- Visualizations (folder for visualizations, e.g., embeddings, recognition results)
 
 ### Documentation Folder:
-- research_papers (relevant research papers)
-- project_notes (project-related notes and documentation)
+- Research Papers (relevant research papers)
+- Project Notes (project-related notes and documentation)
