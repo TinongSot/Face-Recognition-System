@@ -32,7 +32,6 @@ class LazyData:
         return img
 
     def _build_data(self):
-        print("Loading data from", self._filename)
         with open(self._filename, "rb") as f:
             if self._load_strategy is None:
                 self._data = f.read()
@@ -70,6 +69,15 @@ def dataset(path, shuffle=True, random_state=None, verbose=True):
         np.random.shuffle(ds)
 
     return np.array(ds)
+
+
+def fetch_lfw_people(shuffle=True, random_state=None, verbose=True):
+    dst = dataset(
+        "Dataset/Raw", shuffle=shuffle, random_state=random_state, verbose=verbose
+    )
+    X = dst[:, 0]
+    Y = dst[:, 1]
+    return X, Y
 
 
 if __name__ == "__main__":
