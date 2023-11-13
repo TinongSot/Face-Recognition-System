@@ -1,1 +1,1 @@
-from preprocess import LazyData
+from .preprocess import LazyData

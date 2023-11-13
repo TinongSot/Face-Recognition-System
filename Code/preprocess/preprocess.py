@@ -54,7 +54,15 @@ def dataset(path, shuffle=True, random_state=None, verbose=True):
                 match = pattern.match(file)
                 if match:
                     target = match.group(1)
-                ds.append([LazyData(os.path.join(root, file)), target])
+                ds.append(
+                    [
+                        LazyData(
+                            os.path.abspath(os.path.join(root, file)),
+                            load_strategy="image",
+                        ),
+                        target,
+                    ]
+                )
 
     if shuffle:
         if random_state is not None:
