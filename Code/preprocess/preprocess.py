@@ -42,7 +42,27 @@ class LazyData:
                 self._data = self._load_strategy(buf)
 
 
-def dataset(path, shuffle=True, random_state=None, verbose=True):
+def dataset(
+    path: str,
+    min_faces: int | None = 20,
+    max_faces: int | None = None,
+    shuffle: bool = True,
+    random_state: int | None = None,
+    verbose: bool | None = True,
+):
+    if random_state is not None:
+        np.random.seed(random_state)
+
+    excluded_dirs = []
+    for direc in os.listdir(path):
+        if os.path.isdir(os.path.join(path, direc)):
+            if min_faces is not None:
+                if len(os.listdir(os.path.join(path, direc))) < min_faces:
+                    excluded_dirs.append(direc)
+            if max_faces is not None:
+                if len(os.listdir(os.path.join(path, direc))) > max_faces:
+                    excluded_dirs.append(direc)
+
     ds = []
     tracker = tqdm.tqdm if verbose else identity
     pattern = re.compile(r"(.*)_(?:\d{4}).jpg")
@@ -53,6 +73,10 @@ def dataset(path, shuffle=True, random_state=None, verbose=True):
                 match = pattern.match(file)
                 if match:
                     target = match.group(1)
+
+                if target in excluded_dirs:
+                    continue
+
                 ds.append(
                     [
                         LazyData(
@@ -64,16 +88,25 @@ def dataset(path, shuffle=True, random_state=None, verbose=True):
                 )
 
     if shuffle:
-        if random_state is not None:
-            np.random.seed(random_state)
         np.random.shuffle(ds)
 
     return np.array(ds)
 
 
-def fetch_lfw_people(shuffle=True, random_state=None, verbose=True):
+def fetch_lfw_people(
+    min_faces: int | None = 20,
+    max_faces: int | None = None,
+    shuffle=True,
+    random_state=None,
+    verbose=True,
+):
     dst = dataset(
-        "Dataset/Raw", shuffle=shuffle, random_state=random_state, verbose=verbose
+        "Dataset/Raw",
+        min_faces=min_faces,
+        max_faces=max_faces,
+        shuffle=shuffle,
+        random_state=random_state,
+        verbose=verbose,
     )
     X = dst[:, 0]
     Y = dst[:, 1]
