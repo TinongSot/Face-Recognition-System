@@ -4,12 +4,9 @@ import re
 import numpy as np
 import matplotlib.image as mpimg
 from typing import Any, Callable
+from .helper import identity
 
 import dill
-
-
-def identity(x):
-    return x
 
 
 class LazyData:
@@ -46,6 +43,7 @@ def dataset(
     path: str,
     min_faces: int | None = 20,
     max_faces: int | None = None,
+    hard_limit: bool = False,
     shuffle: bool = True,
     random_state: int | None = None,
     verbose: bool | None = True,
@@ -54,6 +52,8 @@ def dataset(
         np.random.seed(random_state)
 
     excluded_dirs = []
+    capped_dirs = []
+    capped_counts = {}
     for direc in os.listdir(path):
         if os.path.isdir(os.path.join(path, direc)):
             if min_faces is not None:
@@ -61,7 +61,10 @@ def dataset(
                     excluded_dirs.append(direc)
             if max_faces is not None:
                 if len(os.listdir(os.path.join(path, direc))) > max_faces:
-                    excluded_dirs.append(direc)
+                    if hard_limit:
+                        excluded_dirs.append(direc)
+                    else:
+                        capped_dirs.append(direc)
 
     ds = []
     tracker = tqdm.tqdm if verbose else identity
@@ -76,6 +79,14 @@ def dataset(
 
                 if target in excluded_dirs:
                     continue
+
+                if max_faces is not None:
+                    if target in capped_dirs:
+                        if target not in capped_counts:
+                            capped_counts[target] = 0
+                        capped_counts[target] += 1
+                        if capped_counts[target] > max_faces:
+                            continue
 
                 ds.append(
                     [
@@ -96,14 +107,16 @@ def dataset(
 def fetch_lfw_people(
     min_faces: int | None = 20,
     max_faces: int | None = None,
-    shuffle=True,
-    random_state=None,
-    verbose=True,
+    hard_limit: bool = False,
+    shuffle: bool = True,
+    random_state: int | None = None,
+    verbose: bool = True,
 ):
     dst = dataset(
         "Dataset/Raw",
         min_faces=min_faces,
         max_faces=max_faces,
+        hard_limit=hard_limit,
         shuffle=shuffle,
         random_state=random_state,
         verbose=verbose,

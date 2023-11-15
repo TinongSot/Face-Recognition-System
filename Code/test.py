@@ -31,11 +31,11 @@ if __name__ == "__main__":
     # print(Y.shape)
     # print(Y[0:5])
 
-    X, Y = fetch_lfw_people(shuffle=False)
-    print(X.shape)
-    print(X[0:5])
-    print(Y.shape)
-    print(Y[0:5])
+    # X, Y = fetch_lfw_people(shuffle=False)
+    # print(X.shape)
+    # print(X[0:5])
+    # print(Y.shape)
+    # print(Y[0:5])
     # __x = []
     # for x in tqdm.tqdm(X):
     #     __x.append(x())
@@ -68,3 +68,7 @@ if __name__ == "__main__":
     # plt.xscale("log")
     # plt.yscale("log")
     # plt.show()
+    X = np.load("Dataset/x.npy")
+    Y = np.load("Dataset/y.npy")
+    print(X[0].shape)
+    print(Y[0])
