@@ -1,3 +1,7 @@
 __pycache__/
 .venv/
 Dataset/**.npy
+
+# IDE
+.idea/
+**/.ipynb_checkpoints

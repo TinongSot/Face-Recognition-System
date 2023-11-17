@@ -1,4 +1,3 @@
-import dill
 import tqdm
 from preprocess.preprocess import dataset, fetch_lfw_people
 import matplotlib.pyplot as plt
@@ -73,13 +72,13 @@ if __name__ == "__main__":
     Y = np.load("Dataset/y_train.npy", allow_pickle=True)
     x_test = np.load("Dataset/x_test.npy", allow_pickle=True)
     y_test = np.load("Dataset/y_test.npy", allow_pickle=True)
-    # fig = plt.figure()
-    # ax = fig.add_subplot(xticks=[], yticks=[])
-    # ax.imshow(X[0], cmap="gray")
-    # ax.set_title(Y[0])
-    # plt.show()
     print(f"{X.shape = }")
     print(f"{len(set(Y)) = }")
     print(f"{len(set(y_test)) = }")
+    fig = plt.figure()
+    ax = fig.add_subplot(xticks=[], yticks=[])
+    ax.imshow(X[0], cmap="gray")
+    ax.set_title(Y[0])
+    plt.show()
     # print(X[0])
     # print(Y[0])
