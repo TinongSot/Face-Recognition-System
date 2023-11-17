@@ -41,7 +41,7 @@ def export_dataset_objects(
     __x = np.array(__x)
 
     # TODO: Normalize
-    __x = __x / 255
+    # __x = __x / 255
 
     x_train, x_test, y_train, y_test = train_test_split(
         __x,
@@ -76,10 +76,14 @@ def export_dataset_objects(
             # plt.show()
 
             # exit(1)
-        x_train_data = np.array(xy)[:, 0]
-        y_train_data = np.array(xy)[:, 1]
+        xy_data = np.array(xy, dtype=object)
+        x_train_data = xy_data[:, 0]
+        x_train_data = (x_train_data / 255)
+        y_train_data = xy_data[:, 1]
         x_train_data.dump("Dataset/x_train.npy")
         y_train_data.dump("Dataset/y_train.npy")
+
+        x_test = (x_test / 255)
         x_test.dump("Dataset/x_test.npy")
         y_test.dump("Dataset/y_test.npy")
         # og_data = np.array(__x)
@@ -90,6 +94,8 @@ def export_dataset_objects(
         # x_data = np.array(__x)
         # x_data.dump("Dataset/x.npy")
         # Y.dump("Dataset/y.npy")
+        x_train = x_train / 255
+        x_test = x_test / 255
         x_train.dump("Dataset/x_train.npy")
         y_train.dump("Dataset/y_train.npy")
         x_test.dump("Dataset/x_test.npy")
@@ -98,5 +104,5 @@ def export_dataset_objects(
 
 if __name__ == "__main__":
     export_dataset_objects(
-        shuffle=False, min_faces=60, max_faces=100, hard_limit=False, augment=False
+        shuffle=False, min_faces=60, max_faces=100, hard_limit=False, augment=True
     )

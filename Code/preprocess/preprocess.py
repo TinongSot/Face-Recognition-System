@@ -6,8 +6,6 @@ import matplotlib.image as mpimg
 from typing import Any, Callable
 from .helper import identity
 
-import dill
-
 
 class LazyData:
     def __init__(
