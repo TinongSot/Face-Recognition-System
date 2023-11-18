@@ -202,7 +202,7 @@ def export_dataset_objects(
 if __name__ == "__main__":
     export_dataset_objects(
         shuffle=False,
-        min_faces=80,
+        min_faces=20,
         max_faces=100,
         hard_limit=False,
         augment=True,
