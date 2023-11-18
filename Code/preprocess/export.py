@@ -24,6 +24,7 @@ def export_dataset_objects(
     augmentation_count: int = 10,
     augmentation_upto: int | None = None,
     augmentation_pipeline=None,
+    experimental_export: bool = False,
 ):
     X, Y = fetch_lfw_people(
         min_faces=min_faces,
@@ -82,13 +83,22 @@ def export_dataset_objects(
                 # exit(1)
             xy_data = np.array(xy, dtype=object)
             x_train_data = xy_data[:, 0]
-            x_train_data = x_train_data / 255
             y_train_data = xy_data[:, 1]
-            x_train_data.dump("Dataset/x_train.npy")
-            y_train_data.dump("Dataset/y_train.npy")
-            x_test.dump("Dataset/x_test.npy")
+            x_train_data = x_train_data / 255
             x_test = x_test / 255
-            y_test.dump("Dataset/y_test.npy")
+            if not experimental_export:
+                x_train_data.dump("Dataset/x_train.npy")
+                y_train_data.dump("Dataset/y_train.npy")
+                x_test.dump("Dataset/x_test.npy")
+                y_test.dump("Dataset/y_test.npy")
+            else:
+                np.savez_compressed(
+                    "Dataset/data.npz",
+                    x_train=x_train_data,
+                    y_train=y_train_data,
+                    x_test=x_test,
+                    y_test=y_test,
+                )
             # og_data = np.array(__x)
             # og_data.dump("Dataset/x_og.npy")
             # y_data.dump("Dataset/y.npy")
@@ -149,24 +159,44 @@ def export_dataset_objects(
 
             xy_data = np.array(xy, dtype=object)
             x_train_data = xy_data[:, 0]
-            x_train_data = x_train_data / 255
             y_train_data = xy_data[:, 1]
-            x_train_data.dump("Dataset/x_train.npy")
-            y_train_data.dump("Dataset/y_train.npy")
-            x_test.dump("Dataset/x_test.npy")
+            x_train_data = x_train_data / 255
             x_test = x_test / 255
-            y_test.dump("Dataset/y_test.npy")
+
+            if not experimental_export:
+                x_train_data.dump("Dataset/x_train.npy")
+                y_train_data.dump("Dataset/y_train.npy")
+                x_test.dump("Dataset/x_test.npy")
+                y_test.dump("Dataset/y_test.npy")
+            else:
+                np.savez_compressed(
+                    "Dataset/data.npz",
+                    x_train=x_train_data,
+                    y_train=y_train_data,
+                    x_test=x_test,
+                    y_test=y_test,
+                )
 
     else:
         # x_data = np.array(__x)
         # x_data.dump("Dataset/x.npy")
         # Y.dump("Dataset/y.npy")
         x_train = x_train / 255
-        x_train.dump("Dataset/x_train.npy")
-        y_train.dump("Dataset/y_train.npy")
         x_test = x_test / 255
-        x_test.dump("Dataset/x_test.npy")
-        y_test.dump("Dataset/y_test.npy")
+
+        if not experimental_export:
+            x_train.dump("Dataset/x_train.npy")
+            y_train.dump("Dataset/y_train.npy")
+            x_test.dump("Dataset/x_test.npy")
+            y_test.dump("Dataset/y_test.npy")
+        else:
+            np.savez_compressed(
+                "Dataset/data.npz",
+                x_train=x_train,
+                y_train=y_train,
+                x_test=x_test,
+                y_test=y_test,
+            )
 
 
 if __name__ == "__main__":
@@ -177,4 +207,5 @@ if __name__ == "__main__":
         hard_limit=False,
         augment=True,
         augmentation_upto=10,
+        experimental_export=True,
     )
