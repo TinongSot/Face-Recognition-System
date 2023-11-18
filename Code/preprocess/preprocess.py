@@ -122,19 +122,3 @@ def fetch_lfw_people(
     X = dst[:, 0]
     Y = dst[:, 1]
     return X, Y
-
-
-if __name__ == "__main__":
-    # data = LazyData(
-    #     "Dataset/Raw/Aaron_Eckhart/Aaron_Eckhart_0001.jpg", load_strategy="image"
-    # )
-    # buf = data()
-    # print(buf.shape)
-    # nbuf = data()
-    # print(nbuf.shape)
-    data = dataset("Dataset/Raw")
-    print(data[0:5])
-    print(data.shape)
-
-    with open("Dataset/catalog.dill", "wb") as f:
-        dill.dump(data, f)
