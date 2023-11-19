@@ -8,9 +8,18 @@ from PIL import Image
 from skimage import feature, transform
 
 import numpy as np
+import os
 
+# Get the absolute path of the current script
+current_script_path = os.path.realpath(__file__)
+
+# Define the relative path to your model file
+relative_model_path = "svm_model_2.pkl"
+
+# Construct the absolute path to the model file
+absolute_model_path = os.path.join(os.path.dirname(current_script_path), relative_model_path)
 # Load the trained SVM model
-with open("C:\\Users\\panha\\Jupiter Note Book\\Term9\\Face-Recognition-System\\Code\\Panha\\svm_model.pkl", 'rb') as model_file:
+with open(absolute_model_path, 'rb') as model_file:
     clf = pickle.load(model_file)
 
 # Function to perform HOG feature extraction on an image
@@ -70,7 +79,7 @@ def extract_hog_features(image):
     return hog_features
 # Streamlit app
 def main():
-    st.title("Face Recognition App")
+    st.title("Facial Recognition App")
 
     uploaded_file = st.file_uploader("Choose an image...", type="jpg")
 
@@ -106,7 +115,10 @@ def main():
             # Make prediction using the trained SVM model
             prediction = clf.predict([image])[0]
 
-            st.write(f"Prediction: Person {prediction}")
+            styled_text = f'Person: <span style="font-weight: bold; background-color: #d4f2d4;"> {prediction} </span>'
+
+            st.markdown(styled_text, unsafe_allow_html=True)
+
 
 if __name__ == '__main__':
     main()
