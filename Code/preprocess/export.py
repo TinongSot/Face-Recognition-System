@@ -1,17 +1,52 @@
-from sklearn.model_selection import train_test_split
-from .preprocess import fetch_lfw_people
-import tqdm
-import numpy as np
-from .helper import identity
-from .augment import augment_data
+import os
+import shutil
+
 import matplotlib.pyplot as plt
+import numpy as np
+import tqdm
 from PIL import Image
 from rich import print
+from sklearn.model_selection import train_test_split
+
+from .augment import augment_data
+from .helper import identity
+from .preprocess import fetch_lfw_people
 
 # TODO: Documentation
 
 
+def dump_test_files(x_test, y_test, path_prefix: str, verbose=True):
+    # clear out the directory
+    if os.path.exists(path_prefix):
+        shutil.rmtree(path_prefix)
+
+    if os.path.exists(path_prefix + ".zip"):
+        os.remove(path_prefix + ".zip")
+
+    os.makedirs(path_prefix)
+
+    freq_table = {}
+    for i, x in enumerate(x_test):
+        target = y_test[i]
+        if target not in freq_table:
+            freq_table[target] = 0
+            os.makedirs(os.path.join(path_prefix, str(target)))
+        freq_table[target] += 1
+
+        # write image as jpeg
+        Image.fromarray(x).save(
+            os.path.join(
+                path_prefix, str(target), f"{target}_{freq_table[target]:04}.jpg"
+            )
+        )
+
+    shutil.make_archive(path_prefix, "zip", path_prefix)
+    if verbose:
+        print("[bold green]Test files dumped successfully[/bold green]")
+
+
 def export_dataset_objects(
+    path_to_dataset: str = "Dataset/Raw",
     min_faces: int | None = 20,
     max_faces: int | None = None,
     hard_limit: bool = False,
@@ -24,9 +59,10 @@ def export_dataset_objects(
     augmentation_count: int = 10,
     augmentation_upto: int | None = None,
     augmentation_pipeline=None,
-    experimental_export: bool = False,
+    experimental_export: bool = True,
 ):
     X, Y = fetch_lfw_people(
+        path_to_dataset=path_to_dataset,
         min_faces=min_faces,
         max_faces=max_faces,
         hard_limit=hard_limit,
@@ -34,6 +70,8 @@ def export_dataset_objects(
         random_state=random_state,
         verbose=verbose,
     )
+
+    export_path = os.path.dirname(path_to_dataset)
 
     tracker = tqdm.tqdm if verbose else identity
 
@@ -82,23 +120,31 @@ def export_dataset_objects(
 
                 # exit(1)
             xy_data = np.array(xy, dtype=object)
+
+            if shuffle:
+                np.random.shuffle(xy_data)
+
             x_train_data = xy_data[:, 0]
             y_train_data = xy_data[:, 1]
             x_train_data = x_train_data / 255
+            dump_test_files(
+                x_test, y_test, path_prefix=os.path.join(export_path, "test")
+            )
             x_test = x_test / 255
             if not experimental_export:
-                x_train_data.dump("Dataset/x_train.npy")
-                y_train_data.dump("Dataset/y_train.npy")
-                x_test.dump("Dataset/x_test.npy")
-                y_test.dump("Dataset/y_test.npy")
+                x_train_data.dump(os.path.join(export_path, "x_train.npy"))
+                y_train_data.dump(os.path.join(export_path, "y_train.npy"))
+                x_test.dump(os.path.join(export_path, "x_test.npy"))
+                y_test.dump(os.path.join(export_path, "y_test.npy"))
             else:
                 np.savez_compressed(
-                    "Dataset/data.npz",
+                    os.path.join(export_path, "data.npz"),
                     x_train=x_train_data,
                     y_train=y_train_data,
                     x_test=x_test,
                     y_test=y_test,
                 )
+
             # og_data = np.array(__x)
             # og_data.dump("Dataset/x_og.npy")
             # y_data.dump("Dataset/y.npy")
@@ -158,19 +204,24 @@ def export_dataset_objects(
                 xy.append([cv_image, y_train[i]])
 
             xy_data = np.array(xy, dtype=object)
+            if shuffle:
+                np.random.shuffle(xy_data)
             x_train_data = xy_data[:, 0]
             y_train_data = xy_data[:, 1]
             x_train_data = x_train_data / 255
+            dump_test_files(
+                x_test, y_test, path_prefix=os.path.join(export_path, "test")
+            )
             x_test = x_test / 255
 
             if not experimental_export:
-                x_train_data.dump("Dataset/x_train.npy")
-                y_train_data.dump("Dataset/y_train.npy")
-                x_test.dump("Dataset/x_test.npy")
-                y_test.dump("Dataset/y_test.npy")
+                x_train_data.dump(os.path.join(export_path, "x_train.npy"))
+                y_train_data.dump(os.path.join(export_path, "y_train.npy"))
+                x_test.dump(os.path.join(export_path, "x_test.npy"))
+                y_test.dump(os.path.join(export_path, "y_test.npy"))
             else:
                 np.savez_compressed(
-                    "Dataset/data.npz",
+                    os.path.join(export_path, "data.npz"),
                     x_train=x_train_data,
                     y_train=y_train_data,
                     x_test=x_test,
@@ -182,16 +233,17 @@ def export_dataset_objects(
         # x_data.dump("Dataset/x.npy")
         # Y.dump("Dataset/y.npy")
         x_train = x_train / 255
+        dump_test_files(x_test, y_test, path_prefix=os.path.join(export_path, "test"))
         x_test = x_test / 255
 
         if not experimental_export:
-            x_train.dump("Dataset/x_train.npy")
-            y_train.dump("Dataset/y_train.npy")
-            x_test.dump("Dataset/x_test.npy")
-            y_test.dump("Dataset/y_test.npy")
+            x_train.dump(os.path.join(export_path, "x_train.npy"))
+            y_train.dump(os.path.join(export_path, "y_train.npy"))
+            x_test.dump(os.path.join(export_path, "x_test.npy"))
+            y_test.dump(os.path.join(export_path, "y_test.npy"))
         else:
             np.savez_compressed(
-                "Dataset/data.npz",
+                os.path.join(export_path, "data.npz"),
                 x_train=x_train,
                 y_train=y_train,
                 x_test=x_test,

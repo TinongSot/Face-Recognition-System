@@ -1,9 +1,11 @@
 import os
-import tqdm
 import re
-import numpy as np
-import matplotlib.image as mpimg
 from typing import Any, Callable
+
+import matplotlib.image as mpimg
+import numpy as np
+import tqdm
+
 from .helper import identity
 
 
@@ -103,6 +105,7 @@ def dataset(
 
 
 def fetch_lfw_people(
+    path_to_dataset: str = "Dataset/Raw",
     min_faces: int | None = 20,
     max_faces: int | None = None,
     hard_limit: bool = False,
@@ -111,7 +114,7 @@ def fetch_lfw_people(
     verbose: bool = True,
 ):
     dst = dataset(
-        "Dataset/Raw",
+        path_to_dataset,
         min_faces=min_faces,
         max_faces=max_faces,
         hard_limit=hard_limit,

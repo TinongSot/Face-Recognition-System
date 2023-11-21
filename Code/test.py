@@ -1,3 +1,4 @@
+from re import X
 import tqdm
 from preprocess.preprocess import dataset, fetch_lfw_people
 import matplotlib.pyplot as plt
@@ -6,6 +7,7 @@ import matplotlib as mpl
 from PIL import Image
 import numpy as np
 from rich import print
+from preprocess.visualization import visualize_image
 
 if __name__ == "__main__":
     plt.style.use("ggplot")
@@ -31,7 +33,15 @@ if __name__ == "__main__":
     # print(Y.shape)
     # print(Y[0:5])
 
-    # X, Y = fetch_lfw_people(shuffle=False)
+    # X, Y = fetch_lfw_people(shuffle=False, min_faces=60, max_faces=100, hard_limit=True)
+    # X, Y = fetch_lfw_people(shuffle=True)
+
+    # __x = []
+    # for x in range(10):
+    #     img = Image.fromarray(X[x](), "RGB").convert("L")
+    #     data = np.array(img) / 255
+    #     __x.append(data)
+
     # print(X.shape)
     # print(X[0:5])
     # print(Y.shape)
@@ -43,6 +53,8 @@ if __name__ == "__main__":
     # x_data = np.array(__x)
     # x_data.dump("Dataset/x.npy")
     # Y.dump("Dataset/y.npy")
+    # print(X.shape)
+    # print(len(set(Y)))
 
     # freq = {}
     # for y in Y:
@@ -52,6 +64,7 @@ if __name__ == "__main__":
 
     # sort = sorted(freq.items(), key=lambda x: x[1], reverse=True)
 
+    # print(sort)
     # max_value = sort[0][1]
     # counts = []
     # for i in range(0, max_value):
@@ -63,22 +76,34 @@ if __name__ == "__main__":
 
     #     counts.append(count)
     # print(counts)
+    # print(counts[20])
 
     # plt.plot(counts)
     # plt.xscale("log")
     # plt.yscale("log")
     # plt.show()
-    X = np.load("Dataset/x_train.npy", allow_pickle=True)
-    Y = np.load("Dataset/y_train.npy", allow_pickle=True)
-    x_test = np.load("Dataset/x_test.npy", allow_pickle=True)
-    y_test = np.load("Dataset/y_test.npy", allow_pickle=True)
-    print(f"{X.shape = }")
-    print(f"{len(set(Y)) = }")
-    print(f"{len(set(y_test)) = }")
-    fig = plt.figure()
-    ax = fig.add_subplot(xticks=[], yticks=[])
-    ax.imshow(X[0], cmap="gray")
-    ax.set_title(Y[0])
-    plt.show()
+    # X = np.load("Dataset/x_train.npy", allow_pickle=True)
+    # Y = np.load("Dataset/y_train.npy", allow_pickle=True)
+    # x_test = np.load("Dataset/x_test.npy", allow_pickle=True)
+    # y_test = np.load("Dataset/y_test.npy", allow_pickle=True)
+    # print(f"{X.shape = }")
+    # print(f"{len(set(Y)) = }")
+    # print(f"{len(set(y_test)) = }")
+    # fig = plt.figure()
+    # ax = fig.add_subplot(xticks=[], yticks=[])
+    # ax.imshow(X[0], cmap="gray")
+    # ax.set_title(Y[0])
+    # plt.show()
     # print(X[0])
     # print(Y[0])
+
+    data = np.load("Dataset/data.npz", allow_pickle=True)
+    X = data["x_test"]
+    Y = data["y_test"]
+
+    fig, axes = plt.subplots(3, 3)
+    axes = axes.flatten()
+
+    visualize_image(axes, X, Y, fig)
+    plt.tight_layout()
+    plt.show()
