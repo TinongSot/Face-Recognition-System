@@ -8,10 +8,11 @@ import tqdm
 from PIL import Image
 from rich import print
 from sklearn.model_selection import train_test_split
+from memory_profiler import profile
 
-from .augment import augment_data
-from .helper import identity
-from .preprocess import fetch_lfw_people
+from Code.preprocess.augment import augment_data
+from Code.preprocess.helper import identity
+from Code.preprocess.preprocess import fetch_lfw_people
 
 # TODO: Documentation
 
@@ -46,6 +47,7 @@ def dump_test_files(x_test, y_test, path_prefix: str, verbose=True):
         print("[bold green]Test files dumped successfully[/bold green]")
 
 
+@profile
 def export_dataset_objects(
     path_to_dataset: str = "Dataset/Raw",
     min_faces: int | None = 20,
@@ -72,6 +74,10 @@ def export_dataset_objects(
         verbose=verbose,
     )
 
+    log = print if verbose else identity
+
+    log("[bold green]Dataset loaded successfully[/bold green]")
+
     export_path = os.path.dirname(path_to_dataset)
 
     tracker = tqdm.tqdm if verbose else identity
@@ -82,12 +88,14 @@ def export_dataset_objects(
     __x = []
     for x in tracker(X):
         __x.append(x())
-    # exit(1)
+    # # exit(1)
 
-    __x = np.array(__x)
-
-    # TODO: Normalize
-    # __x = __x / 255
+    __x = np.array(__x, copy=False)
+    log("[bold green]Binary data loaded successfully[/bold green]")
+    # __x = np.zeros((X.shape[0], 250, 250, 3), dtype=np.uint8)
+    # print(__x.shape)
+    # for i, x in tracker(enumerate(X)):
+    #     __x[i] = x()
 
     x_train, x_test, y_train, y_test = train_test_split(
         __x,
@@ -96,6 +104,8 @@ def export_dataset_objects(
         random_state=random_state,
         stratify=Y,
     )
+
+    log("[bold green]Dataset split successfully[/bold green]")
 
     if augment:
         if augmentation_upto is None:
@@ -110,7 +120,7 @@ def export_dataset_objects(
 
                 for data in aug_data:
                     data = Image.fromarray(data).convert("L")
-                    data = np.array(data)
+                    data = np.array(data, copy=False)
                     xy.append([data, y_train[i]])
                 # print(xy)
                 # fig, axes = plt.subplots(2, 5, figsize=(20, 10))
@@ -123,15 +133,21 @@ def export_dataset_objects(
                 # plt.show()
 
                 # exit(1)
-            xy_data = np.array(xy, dtype=object)
-
+            log("[bold green]Augmentation done successfully[/bold green]")
+            xy_data = np.array(xy, dtype=object, copy=False)
+            log("[bold green]Augmented data converted to numpy array[/bold green]")
             if shuffle:
                 np.random.shuffle(xy_data)
+                log("[bold green]Augmented data shuffled successfully[/bold green]")
 
             x_train_data = xy_data[:, 0]
+            log("[bold green]x_train_data split successfully[/bold green]")
             y_train_data = xy_data[:, 1]
+            log("[bold green]y_train_data split successfully[/bold green]")
             x_train_data = x_train_data / 255
+            log("[bold green]x_train_data normalized successfully[/bold green]")
             x_test = x_test / 255
+            log("[bold green]x_test normalized successfully[/bold green]")
             if not experimental_export:
                 x_train_data.dump(os.path.join(export_path, "x_train.npy"))
                 y_train_data.dump(os.path.join(export_path, "y_train.npy"))
@@ -145,6 +161,7 @@ def export_dataset_objects(
                     x_test=x_test,
                     y_test=y_test,
                 )
+                log("[bold green]Dataset exported successfully[/bold green]")
 
             # og_data = np.array(__x)
             # og_data.dump("Dataset/x_og.npy")
@@ -157,6 +174,7 @@ def export_dataset_objects(
                     idents[y].append(i)
                 else:
                     idents[y] = [i]
+            log("[bold green]Identified classes successfully[/bold green]")
 
             if augmentation_upto == 0:
                 # augment upto max_faces
@@ -177,6 +195,9 @@ def export_dataset_objects(
                         )
                         # add it to the dataset
                         xy.append([aug_data[0], y])
+                    log(
+                        "[bold green]Augmented upto max_faces successfully[/bold green]"
+                    )
             elif augmentation_upto > 0:
                 # augment upto augmentation_upto
                 for y in idents:
@@ -195,22 +216,32 @@ def export_dataset_objects(
                             )
                             # add it to the dataset
                             xy.append([aug_data[0], y])
+                log(
+                    "[bold green]Augmented upto augmentation_upto successfully[/bold green]"
+                )
             else:
                 raise Exception("augmentation_upto must be bool or int")
 
             # add the original image with the label
             for i, x in tracker(enumerate(x_train)):
                 cv_image = Image.fromarray(x).convert("L")
-                cv_image = np.array(cv_image)
+                cv_image = np.array(cv_image, copy=False)
                 xy.append([cv_image, y_train[i]])
+            log("[bold green]Original images added successfully[/bold green]")
 
-            xy_data = np.array(xy, dtype=object)
+            xy_data = np.array(xy, dtype=object, copy=False)
+            log("[bold green]Augmented data converted to numpy array[/bold green]")
             if shuffle:
                 np.random.shuffle(xy_data)
+                log("[bold green]Augmented data shuffled successfully[/bold green]")
             x_train_data = xy_data[:, 0]
+            log("[bold green]x_train_data split successfully[/bold green]")
             y_train_data = xy_data[:, 1]
+            log("[bold green]y_train_data split successfully[/bold green]")
             x_train_data = x_train_data / 255
+            log("[bold green]x_train_data normalized successfully[/bold green]")
             x_test = x_test / 255
+            log("[bold green]x_test normalized successfully[/bold green]")
 
             if not experimental_export:
                 x_train_data.dump(os.path.join(export_path, "x_train.npy"))
@@ -225,6 +256,7 @@ def export_dataset_objects(
                     x_test=x_test,
                     y_test=y_test,
                 )
+                log("[bold green]Dataset exported successfully[/bold green]")
 
     else:
         # x_data = np.array(__x)
@@ -251,10 +283,10 @@ def export_dataset_objects(
 if __name__ == "__main__":
     export_dataset_objects(
         shuffle=False,
-        min_faces=20,
-        max_faces=None,
+        min_faces=60,
+        max_faces=100,
         hard_limit=False,
         augment=True,
-        augmentation_upto=250,
+        augmentation_upto=80,
         experimental_export=True,
     )

@@ -6,7 +6,7 @@ import matplotlib.image as mpimg
 import numpy as np
 import tqdm
 
-from .helper import identity
+from Code.preprocess.helper import identity
 
 
 class LazyData:
