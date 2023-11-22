@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -74,6 +75,9 @@ def export_dataset_objects(
     export_path = os.path.dirname(path_to_dataset)
 
     tracker = tqdm.tqdm if verbose else identity
+
+    # print(sys.getsizeof(X[0]))
+    # exit(1)
 
     __x = []
     for x in tracker(X):
@@ -175,9 +179,9 @@ def export_dataset_objects(
                         xy.append([aug_data[0], y])
             elif augmentation_upto > 0:
                 # augment upto augmentation_upto
-                faces = len(idents[y])
-                if augmentation_upto > faces:
-                    for y in idents:
+                for y in idents:
+                    faces = len(idents[y])
+                    if augmentation_upto > faces:
                         augmentation_len = augmentation_upto - len(idents[y])
                         for _k in range(augmentation_len):
                             # choose random image
@@ -248,9 +252,9 @@ if __name__ == "__main__":
     export_dataset_objects(
         shuffle=False,
         min_faces=20,
-        max_faces=100,
+        max_faces=None,
         hard_limit=False,
         augment=True,
-        augmentation_upto=10,
+        augmentation_upto=250,
         experimental_export=True,
     )
