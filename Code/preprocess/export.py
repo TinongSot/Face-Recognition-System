@@ -127,9 +127,6 @@ def export_dataset_objects(
             x_train_data = xy_data[:, 0]
             y_train_data = xy_data[:, 1]
             x_train_data = x_train_data / 255
-            dump_test_files(
-                x_test, y_test, path_prefix=os.path.join(export_path, "test")
-            )
             x_test = x_test / 255
             if not experimental_export:
                 x_train_data.dump(os.path.join(export_path, "x_train.npy"))
@@ -209,9 +206,6 @@ def export_dataset_objects(
             x_train_data = xy_data[:, 0]
             y_train_data = xy_data[:, 1]
             x_train_data = x_train_data / 255
-            dump_test_files(
-                x_test, y_test, path_prefix=os.path.join(export_path, "test")
-            )
             x_test = x_test / 255
 
             if not experimental_export:
@@ -233,7 +227,6 @@ def export_dataset_objects(
         # x_data.dump("Dataset/x.npy")
         # Y.dump("Dataset/y.npy")
         x_train = x_train / 255
-        dump_test_files(x_test, y_test, path_prefix=os.path.join(export_path, "test"))
         x_test = x_test / 255
 
         if not experimental_export:

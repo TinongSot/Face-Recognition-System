@@ -1,3 +1,4 @@
+import os
 from re import X
 import tqdm
 from preprocess.preprocess import dataset, fetch_lfw_people
@@ -8,6 +9,7 @@ from PIL import Image
 import numpy as np
 from rich import print
 from preprocess.visualization import visualize_image
+from preprocess.export import dump_test_files
 
 if __name__ == "__main__":
     plt.style.use("ggplot")
@@ -100,6 +102,8 @@ if __name__ == "__main__":
     data = np.load("Dataset/data.npz", allow_pickle=True)
     X = data["x_test"]
     Y = data["y_test"]
+
+    dump_test_files(X, Y, path_prefix=os.path.join("Dataset", "test"))
 
     fig, axes = plt.subplots(3, 3)
     axes = axes.flatten()
