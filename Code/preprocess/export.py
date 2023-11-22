@@ -154,11 +154,30 @@ def export_dataset_objects(
                 x_test.dump(os.path.join(export_path, "x_test.npy"))
                 y_test.dump(os.path.join(export_path, "y_test.npy"))
             else:
+                # np.savez_compressed(
+                #     os.path.join(export_path, "data.npz"),
+                #     x_train=x_train_data,
+                #     y_train=y_train_data,
+                #     x_test=x_test,
+                #     y_test=y_test,
+                # )
                 np.savez_compressed(
-                    os.path.join(export_path, "data.npz"),
-                    x_train=x_train_data,
-                    y_train=y_train_data,
+                    os.path.join(export_path, "x_train.npz"),
+                    x_train=x_train,
+                )
+
+                np.savez_compressed(
+                    os.path.join(export_path, "y_train.npz"),
+                    y_train=y_train,
+                )
+
+                np.savez_compressed(
+                    os.path.join(export_path, "x_test.npz"),
                     x_test=x_test,
+                )
+
+                np.savez_compressed(
+                    os.path.join(export_path, "y_test.npz"),
                     y_test=y_test,
                 )
                 log("[bold green]Dataset exported successfully[/bold green]")
@@ -249,11 +268,31 @@ def export_dataset_objects(
                 x_test.dump(os.path.join(export_path, "x_test.npy"))
                 y_test.dump(os.path.join(export_path, "y_test.npy"))
             else:
+                # np.savez_compressed(
+                #     os.path.join(export_path, "data.npz"),
+                #     x_train=x_train_data,
+                #     y_train=y_train_data,
+                #     x_test=x_test,
+                #     y_test=y_test,
+                # )
+
                 np.savez_compressed(
-                    os.path.join(export_path, "data.npz"),
-                    x_train=x_train_data,
-                    y_train=y_train_data,
+                    os.path.join(export_path, "x_train.npz"),
+                    x_train=x_train,
+                )
+
+                np.savez_compressed(
+                    os.path.join(export_path, "y_train.npz"),
+                    y_train=y_train,
+                )
+
+                np.savez_compressed(
+                    os.path.join(export_path, "x_test.npz"),
                     x_test=x_test,
+                )
+
+                np.savez_compressed(
+                    os.path.join(export_path, "y_test.npz"),
                     y_test=y_test,
                 )
                 log("[bold green]Dataset exported successfully[/bold green]")
@@ -271,11 +310,30 @@ def export_dataset_objects(
             x_test.dump(os.path.join(export_path, "x_test.npy"))
             y_test.dump(os.path.join(export_path, "y_test.npy"))
         else:
+            # np.savez_compressed(
+            #     os.path.join(export_path, "data.npz"),
+            #     x_train=x_train,
+            #     y_train=y_train,
+            #     x_test=x_test,
+            #     y_test=y_test,
+            # )
             np.savez_compressed(
-                os.path.join(export_path, "data.npz"),
+                os.path.join(export_path, "x_train.npz"),
                 x_train=x_train,
+            )
+
+            np.savez_compressed(
+                os.path.join(export_path, "y_train.npz"),
                 y_train=y_train,
+            )
+
+            np.savez_compressed(
+                os.path.join(export_path, "x_test.npz"),
                 x_test=x_test,
+            )
+
+            np.savez_compressed(
+                os.path.join(export_path, "y_test.npz"),
                 y_test=y_test,
             )
 

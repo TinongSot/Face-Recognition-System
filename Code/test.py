@@ -1,15 +1,15 @@
 import os
 from re import X
 import tqdm
-from preprocess.preprocess import dataset, fetch_lfw_people
+from Code.preprocess.preprocess import dataset, fetch_lfw_people
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib as mpl
 from PIL import Image
 import numpy as np
 from rich import print
-from preprocess.visualization import visualize_image
-from preprocess.export import dump_test_files
+from Code.preprocess.visualization import visualize_image
+from Code.preprocess.export import dump_test_files
 
 if __name__ == "__main__":
     plt.style.use("ggplot")
@@ -99,15 +99,18 @@ if __name__ == "__main__":
     # print(X[0])
     # print(Y[0])
 
-    data = np.load("Dataset/data.npz", allow_pickle=True)
-    X = data["x_test"]
-    Y = data["y_test"]
+    # data = np.load("Dataset/data.npz", allow_pickle=True)
+    # X = data["x_test"]
+    # Y = data["y_test"]
 
-    dump_test_files(X, Y, path_prefix=os.path.join("Dataset", "test"))
+    # dump_test_files(X, Y, path_prefix=os.path.join("Dataset", "test"))
 
-    fig, axes = plt.subplots(3, 3)
-    axes = axes.flatten()
+    # fig, axes = plt.subplots(3, 3)
+    # axes = axes.flatten()
 
-    visualize_image(axes, X, Y, fig)
-    plt.tight_layout()
-    plt.show()
+    # visualize_image(axes, X, Y, fig)
+    # plt.tight_layout()
+    # plt.show()
+    data = np.load("Dataset/data.zip", allow_pickle=True)
+    X = data["x_train"]
+    print(X.shape)
