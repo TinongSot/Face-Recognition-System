@@ -99,18 +99,18 @@ if __name__ == "__main__":
     # print(X[0])
     # print(Y[0])
 
-    # data = np.load("Dataset/data.npz", allow_pickle=True)
-    # X = data["x_test"]
-    # Y = data["y_test"]
+    data = np.load("Dataset/data.npz", allow_pickle=True)
+    X = data["x_test"]
+    Y = data["y_test"]
 
-    # dump_test_files(X, Y, path_prefix=os.path.join("Dataset", "test"))
+    dump_test_files(X, Y, path_prefix=os.path.join("Dataset", "test"))
 
-    # fig, axes = plt.subplots(3, 3)
-    # axes = axes.flatten()
+    fig, axes = plt.subplots(3, 3)
+    axes = axes.flatten()
 
-    # visualize_image(axes, X, Y, fig)
-    # plt.tight_layout()
-    # plt.show()
-    data = np.load("Dataset/data.zip", allow_pickle=True)
-    X = data["x_train"]
-    print(X.shape)
+    visualize_image(axes, X, Y, fig)
+    plt.tight_layout()
+    plt.show()
+    # data = np.load("Dataset/data.zip", allow_pickle=True)
+    # X = data["x_train"]
+    # print(X.shape)
